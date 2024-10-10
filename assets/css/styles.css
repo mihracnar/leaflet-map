@@ -1,0 +1,131 @@
+body, html, #map {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.leaflet-control-location {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 18px;
+    color: #333;
+}
+
+.leaflet-control-location:hover {
+    background-color: #eee;
+}
+
+.leaflet-control-search {
+    /* Leaflet arama kontrolünün genişliği */
+    width: 35vw !important; 
+    /* Konumlandırma */
+    position: absolute; 
+    /* Sayfanın sol tarafında */
+    left: 10px; 
+    /* Sayfanın üst tarafında */
+    top: 55px;
+    /* Arama kutusunun z-index değeri */
+    z-index: 1000; /* Haritadan yukarıda olması için */
+}
+
+.leaflet-control-search .search-input {
+    /* Genişlik */
+    width: 31vw; /* İstediğiniz genişliği belirtin */
+    /* Konum */
+    position: absolute; /* Konumlandırma için temel */
+    left: 30px; /* Sol kenardan 0 piksel uzaklık */
+    top: 0; /* Üst kenardan 0 piksel uzaklık */
+  
+    /* Diğer Özellikler */
+    padding: 8px; /* Dolgu */
+    border: 1px solid #ccc; /* Kenarlık */
+    border-radius: 5px; /* Yuvarlatılmış köşeler */
+  }
+
+  .leaflet-control-search .search-icon {
+    background-image: url("path/to/your/search-icon.png"); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+  }
+
+/* Leaflet zoom kontrolünü gizle */
+.leaflet-control-zoom {
+  display: none;
+}        
+
+/* Menü stil */
+#map-menu-top, #map-menu-bottom {
+    position: absolute;
+    z-index: 1000;
+}
+
+#map-menu-top {
+    top: 10px;
+    right: 10px;
+}
+
+#map-menu-bottom {
+    bottom: 10px;
+    right: 10px;
+    bottom: 20px;
+}
+
+.btn-circle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-right: 5px; /* Sağdaki butona boşluk */
+    margin-bottom: 5px; /* Alttaki butona boşluk */
+}
+
+/* Katmanlar modalı için özel stiller */
+#layersModal .modal-dialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    margin: 0;
+    padding-right: 20px;
+    overflow: hidden;
+    padding-top: 60px;
+    transform: translateX(100%); /* Başlangıçta modalı gizlemek için */
+    transition: transform 0.3s ease-out; /* Geçiş efekti */
+}
+
+#layersModal.show .modal-dialog {
+    transform: translateX(0); /* Modal görünür olduğunda kaydır */
+}
+
+#map-menu-bottom .row {
+    display: flex;
+    flex-direction: column; /* Sütunları dikey olarak hizala */
+    align-items: flex-end;  /* Öğeleri sağa yasla */
+}
+
+
+@media (max-width: 768px) {
+    .leaflet-control-search {
+        /* Leaflet arama kontrolünün genişliği */
+        width: 90vw !important; 
+        /* Konumlandırma */
+        position: absolute; 
+        /* Sayfanın sol tarafında */
+        left: 5vw; 
+        /* Sayfanın üst tarafında */
+        top: 55px;
+        /* Arama kutusunun z-index değeri */
+    }
+    
+    
+    .leaflet-control-search .search-input {
+      width: 70vw;
+      right: 15vw;
+    }
+  }
