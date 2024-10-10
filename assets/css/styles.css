@@ -145,4 +145,13 @@ body, html, #map {
       width: 70vw;
       right: 15vw;
     }
+
+    .logo {
+        position: absolute;   /* Sabit pozisyon */
+        top: 5px;            /* Üstten mesafe */
+        left: 43%;           /* Soldan mesafe */
+        width: auto;          /* Logonun genişliği */
+        height: 60px;         /* Yüksekliğin genişliğe göre otomatik ayarlanması */
+        z-index: 1000;        /* Haritanın üstünde görünmesi için yüksek z-index değeri */
+      }
   }
