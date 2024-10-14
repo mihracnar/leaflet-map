@@ -11,7 +11,7 @@ body, html, #map {
     cursor: pointer;
     border-radius: 3px;
     font-size: 18px;
-    color: #333;
+    color: #000;
 }
 
 .leaflet-control-location:hover {
@@ -41,7 +41,7 @@ body, html, #map {
   
     /* Diğer Özellikler */
     padding: 8px; /* Dolgu */
-    border: 1px solid #ccc; /* Kenarlık */
+    border: 1px solid #000; /* Kenarlık */
     border-radius: 5px; /* Yuvarlatılmış köşeler */
   }
 
@@ -53,6 +53,18 @@ body, html, #map {
     height: 20px;
     display: inline-block;
   }
+
+  .leaflet-control-search.search-exp {
+    background: padding-box rgb(255, 255, 255);
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0.9);
+    border-top-color: ;
+    border-right-color: ;
+    border-bottom-color: ;
+    border-left-color: ;
+    border-image: initial;
+}
 
 /* Leaflet zoom kontrolünü gizle */
 .leaflet-control-zoom {
@@ -149,7 +161,7 @@ body, html, #map {
     .logo {
         position: absolute;   /* Sabit pozisyon */
         top: 5px;            /* Üstten mesafe */
-        left: 38%;           /* Soldan mesafe */
+        left: 40%;           /* Soldan mesafe */
         width: auto;          /* Logonun genişliği */
         height: 60px;         /* Yüksekliğin genişliğe göre otomatik ayarlanması */
         z-index: 1000;        /* Haritanın üstünde görünmesi için yüksek z-index değeri */
