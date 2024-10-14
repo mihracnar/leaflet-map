@@ -120,3 +120,31 @@ zoomInButton.addEventListener('click', function() {
 zoomOutButton.addEventListener('click', function() {
   map.zoomOut();
 });
+
+let currentMarker = null;
+
+
+const blackIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34]
+});
+
+map.on('click', function (e) {
+    const latlng = e.latlng;
+
+    if (currentMarker) {
+        map.removeLayer(currentMarker);
+    }
+
+    const marker = L.marker(latlng, { icon: blackIcon }).addTo(map); 
+    marker.bindPopup(`<b>Konum:</b> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`).openPopup();
+
+    currentMarker = marker;
+
+    marker.on('popupclose', function () {
+        map.removeLayer(marker);
+        currentMarker = null; 
+    });
+});
