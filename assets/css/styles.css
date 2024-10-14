@@ -24,7 +24,7 @@ body, html, #map {
     /* Konumlandırma */
     position: absolute; 
     /* Sayfanın sol tarafında */
-    left: 220px; 
+    left: 200px; 
     /* Sayfanın üst tarafında */
     top: 45px;
     /* Arama kutusunun z-index değeri */
@@ -121,7 +121,7 @@ body, html, #map {
     position: absolute;   /* Sabit pozisyon */
     top: 10px;            /* Üstten mesafe */
     left: 20px;           /* Soldan mesafe */
-    width: 200px;          /* Logonun genişliği */
+    width: 170px;          /* Logonun genişliği */
     height: auto;         /* Yüksekliğin genişliğe göre otomatik ayarlanması */
     z-index: 1000;        /* Haritanın üstünde görünmesi için yüksek z-index değeri */
   }
