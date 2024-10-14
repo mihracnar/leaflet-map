@@ -26,7 +26,7 @@ body, html, #map {
     /* Sayfanın sol tarafında */
     left: 200px; 
     /* Sayfanın üst tarafında */
-    top: 45px;
+    top: 35px;
     /* Arama kutusunun z-index değeri */
     z-index: 1000; /* Haritadan yukarıda olması için */
 }
@@ -74,7 +74,7 @@ body, html, #map {
 }
 
 #map-menu-top {
-    top: 45px;
+    top: 35px;
     right: 10px;
 }
 
