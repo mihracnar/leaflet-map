@@ -29,8 +29,8 @@ const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 const layersControl = L.control.layers({
     "Carto Light": cartoLightLayer,
     "Google Maps (Uydu)": googleMapsSatelliteLayer,
-    "Google Maps (Harita)": googleMapsLayer,
     "Google Maps (Uydu Hibrit)": googleMapsSatelliteHybridLayer,
+    "Google Maps (Harita)": googleMapsLayer,
     "OpenStreetMap": osmLayer
 }, {}, { collapsed: false }); 
 
