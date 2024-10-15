@@ -111,6 +111,15 @@ body, html, #map {
     transform: translateX(0); /* Modal görünür olduğunda kaydır */
 }
 
+#map-toggle {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%); /* Butonu yatay olarak ortala */
+    z-index: 1000; /* Diğer öğelerin üstünde olsun */
+    color: #000;
+}
+
 #map-menu-bottom .row {
     display: flex;
     flex-direction: column; /* Sütunları dikey olarak hizala */

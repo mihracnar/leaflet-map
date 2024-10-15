@@ -41,7 +41,7 @@ document.getElementById('layersModalBody').appendChild(layerControlElement);
 
 
 // Konum butonu işlevi
-    // Leaflet'in locate kontrolünü gizli başlat
+// Leaflet'in locate kontrolünü gizli başlat
 const locateControl = L.control.locate({
   position: 'topright', // Konum seçeneği
   flyTo: true, // Konuma uçarak git
@@ -121,7 +121,6 @@ zoomOutButton.addEventListener('click', function() {
   map.zoomOut();
 });
 
-let currentMarker = null;
 
 
 const blackIcon = L.icon({
@@ -129,6 +128,33 @@ const blackIcon = L.icon({
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34]
+});
+
+
+// Toggle butonu
+const toggleButton = document.getElementById('toggle-button');
+const mapDiv = document.getElementById('map');
+let currentMarker = null; 
+
+// Başlangıçta buton deaktif
+toggleButton.disabled = true; // Butonu başlangıçta devre dışı bırak
+toggleButton.classList.remove('active');
+toggleButton.setAttribute('aria-pressed', 'false');
+
+
+
+toggleButton.addEventListener('click', function () {
+    if (toggleButton.classList.contains('active')) {
+        mapDiv.style.display = 'none';
+        toggleButton.textContent = 'Not Ekle';
+    } else {
+        if (currentMarker) { // Pin varsa formu göster
+          $('#addNoteModal').modal('show');
+    } else {
+          mapDiv.style.display = 'block';
+          toggleButton.textContent = 'Not Ekle';
+    }
+      }
 });
 
 map.on('click', function (e) {
@@ -142,9 +168,51 @@ map.on('click', function (e) {
     marker.bindPopup(`<b>Konum:</b> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`).openPopup();
 
     currentMarker = marker;
+    toggleButton.disabled = false; // Butonu etkinleştir
+
 
     marker.on('popupclose', function () {
         map.removeLayer(marker);
-        currentMarker = null; 
-    });
+        currentMarker = null;
+        toggleButton.disabled = true; // Butonu devre dışı bırak
+        toggleButton.classList.remove('active');
+        toggleButton.setAttribute('aria-pressed', 'false');
+      });
+});
+
+ // Not ekleme formu
+ const noteForm = document.getElementById('noteForm');
+ const noteLocationInput = document.getElementById('noteLocation');
+
+ noteForm.addEventListener('submit', function (e) {
+     e.preventDefault();
+     // Form verilerini işle (örneğin, not içeriğini al)
+     const noteContent = document.getElementById('noteContent').value;
+     // Formu kapat
+     $('#addNoteModal').modal('hide');
+     // Butonu pasifleştir
+     toggleButton.disabled = true;
+     toggleButton.classList.remove('active');
+     toggleButton.setAttribute('aria-pressed', 'false');
+     // Pin'i kaldır
+     map.removeLayer(currentMarker);
+     currentMarker = null;
+ });
+
+ // Modal açıldığında konumu güncelle
+ $('#addNoteModal').on('shown.bs.modal', function () {
+     if (currentMarker) {
+         const latlng = currentMarker.getLatLng();
+         noteLocationInput.value = `Lat: ${latlng.lat.toFixed(4)}, Lon: ${latlng.lng.toFixed(4)}`;
+     }
+ });
+
+// Modal kapatma butonu için işlem
+$('#addNoteModal').on('hidden.bs.modal', function () {
+// Kapatma işlemini işle
+// Örneğin, form verilerini temizleme
+document.getElementById('noteContent').value = '';
+// Form alanını temizle
+noteLocationInput.value = '';
+// ... (diğer kapatma işlemleri) ...
 });
