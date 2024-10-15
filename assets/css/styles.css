@@ -118,15 +118,21 @@ body, html, #map {
     left: 50%;
     transform: translateX(-50%); /* Butonu yatay olarak ortala */
     z-index: 1000; /* Diğer öğelerin üstünde olsun */
-    color: #000;
-    border-width: 2px;
-    border-color: rgb(255, 255, 255);
+    color: #000000;
 }
 
 #toggle-button {
-    border-color: rgb(255, 255, 255);
-    border-width: 2px; /* İstediğiniz border rengi */
-  }
+    background-color: #000000; /* Buton arka plan rengi */
+    border: 2px solid #fffdfd; /* Buton border'ı */
+    color: rgb(255, 255, 255); /* Buton yazı rengi */
+    text-align: center; /* Buton metin hizalaması */
+    text-decoration: none; /* Buton metin süslemeleri */
+    display: inline-block; /* Buton görüntüsünün yönetimi */
+    font-size: 14px; /* Buton yazı boyutu */
+    font-weight: bold;
+    border-radius: 5px; /* Buton köşeleri */
+    cursor: pointer; /* Fare işaretçisi */
+}
 
 #map-menu-bottom .row {
     display: flex;
