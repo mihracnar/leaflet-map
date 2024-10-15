@@ -118,7 +118,14 @@ body, html, #map {
     transform: translateX(-50%); /* Butonu yatay olarak ortala */
     z-index: 1000; /* Diğer öğelerin üstünde olsun */
     color: #000;
+    border-width: 2px;
+    border-color: rgb(255, 255, 255);
 }
+
+#toggle-button {
+    border-color: rgb(255, 255, 255);
+    border-width: 2px; /* İstediğiniz border rengi */
+  }
 
 #map-menu-bottom .row {
     display: flex;
