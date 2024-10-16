@@ -220,8 +220,16 @@ marker.on('popupclose', function () {
     .insert([{ content: noteContent, location_y: y_koordinat, location_x: x_koordinat }]);
 
 
-    // Örneğin, hata durumunda kullanıcıya bir mesaj gösterebilir veya başarılı işlemde bir teyit mesajı gösterebilirsiniz
-    // Formu kapat
+    // Hata durumunda işleme
+    if (error) {
+    console.error(error);
+    // Kullanıcıya hata mesajı gösterin
+    } else {
+    console.log(data);
+    // Başarı durumunda kullanıcıya bir mesaj gösterin
+    }
+
+
      $('#addNoteModal').modal('hide');
      // Butonu pasifleştir
      toggleButton.disabled = true;
