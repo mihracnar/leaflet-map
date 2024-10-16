@@ -134,7 +134,8 @@ const blackIcon = L.icon({
 // Toggle butonu
 const toggleButton = document.getElementById('toggle-button');
 const mapDiv = document.getElementById('map');
-let currentMarker = null; 
+
+let currentMarker = null;
 
 // Başlangıçta buton deaktif
 toggleButton.disabled = true; // Butonu başlangıçta devre dışı bırak
@@ -179,16 +180,34 @@ map.on('click', function (e) {
         toggleButton.setAttribute('aria-pressed', 'false');
       });
 });
+ 
+
+ // Supabase ayarları
+ const supabaseUrl = 'https://fyprykalancslcxodoge.supabase.co';
+ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHJ5a2FsYW5jc2xjeG9kb2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY5MDAwNTEsImV4cCI6MjA0MjQ3NjA1MX0.RT7IOmOh_iVrmUexXXRrv8f02NJY2k_i__1W1kCMsDo';
+ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 
  // Not ekleme formu
  const noteForm = document.getElementById('noteForm');
  const noteLocationInput = document.getElementById('noteLocation');
 
- noteForm.addEventListener('submit', function (e) {
+ noteForm.addEventListener('submit', async function (e) {
      e.preventDefault();
      // Form verilerini işle (örneğin, not içeriğini al)
      const noteContent = document.getElementById('noteContent').value;
-     // Formu kapat
+     const noteLocation = noteLocationInput.value;
+     // Konum verilerini ayırma
+     const [lat, lng] = noteLocation.split(',').map(parseFloat);
+
+     // Supabase'e veri gönderme
+     const { data, error } = await supabase
+     .from('notes')
+     .insert([{ content: noteContent, location_y: lat, location_x: lng }]);
+
+
+    // Örneğin, hata durumunda kullanıcıya bir mesaj gösterebilir veya başarılı işlemde bir teyit mesajı gösterebilirsiniz
+    // Formu kapat
      $('#addNoteModal').modal('hide');
      // Butonu pasifleştir
      toggleButton.disabled = true;
@@ -201,11 +220,15 @@ map.on('click', function (e) {
 
  // Modal açıldığında konumu güncelle
  $('#addNoteModal').on('shown.bs.modal', function () {
-     if (currentMarker) {
-         const latlng = currentMarker.getLatLng();
-         noteLocationInput.value = `Lat: ${latlng.lat.toFixed(4)}, Lon: ${latlng.lng.toFixed(4)}`;
-     }
- });
+    // Eğer pin mevcutsa konumu güncelle
+    if (currentMarker) {
+        const latlng = currentMarker.getLatLng();
+        noteLocationInput.value = `Lat: ${latlng.lat.toFixed(4)}, Lon: ${latlng.lng.toFixed(4)}`;
+    } else {
+        // Eğer pin yoksa, konum alanını boşalt
+        noteLocationInput.value = '';
+    }
+});
 
 // Modal kapatma butonu için işlem
 $('#addNoteModal').on('hidden.bs.modal', function () {
