@@ -209,55 +209,50 @@ marker.on('popupclose', function () {
 
  noteForm.addEventListener('submit', async function (e) {
     e.preventDefault();
+
     // Form verilerini işle (örneğin, not içeriğini al)
     const noteContent = document.getElementById('noteContent').value;
     const y_koordinat = document.getElementById('y_koordinat').value;
     const x_koordinat = document.getElementById('x_koordinat').value;
   
-    // Supabase'e veri gönderme
-    const { data, error } = await supabase
-    .from('notes')
-    .insert([{ content: noteContent, location_y: y_koordinat, location_x: x_koordinat }]);
+    try {
+        // Supabase'e veri gönderme
+        const { data, error } = await supabaseClient
+            .from('notes')
+            .insert([
+                { 
+                    content: noteContent, 
+                    location_y: y_koordinat, 
+                    location_x: x_koordinat 
+                }
+            ]);
 
-
-    // Hata durumunda işleme
-    if (error) {
-    console.error(error);
-    // Kullanıcıya hata mesajı gösterin
-    } else {
-    console.log(data);
-    // Başarı durumunda kullanıcıya bir mesaj gösterin
+        if (error) {
+            console.error('Supabase error:', error);
+            alert('Not eklenirken bir hata oluştu: ' + error.message);
+        } else {
+            console.log('Not başarıyla eklendi:', data);
+            alert('Not başarıyla eklendi!');
+            
+            // Modal'ı kapat
+            $('#addNoteModal').modal('hide');
+            
+            // Butonu pasifleştir
+            toggleButton.disabled = true;
+            toggleButton.classList.remove('active');
+            toggleButton.setAttribute('aria-pressed', 'false');
+            
+            // Pin'i kaldır
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+                currentMarker = null;
+            }
+            
+            // Formu temizle
+            noteForm.reset();
+        }
+    } catch (err) {
+        console.error('Beklenmeyen hata:', err);
+        alert('Beklenmeyen bir hata oluştu: ' + err.message);
     }
-
-
-     $('#addNoteModal').modal('hide');
-     // Butonu pasifleştir
-     toggleButton.disabled = true;
-     toggleButton.classList.remove('active');
-     toggleButton.setAttribute('aria-pressed', 'false');
-     // Pin'i kaldır
-     map.removeLayer(currentMarker);
-     currentMarker = null;
- });
-
- // Modal açıldığında konumu güncelle
- $('#addNoteModal').on('shown.bs.modal', function () {
-    // Eğer pin mevcutsa konumu güncelle
-    if (currentMarker) {
-        const latlng = currentMarker.getLatLng();
-        noteLocationInput.value = `Lat: ${latlng.lat.toFixed(4)}, Lon: ${latlng.lng.toFixed(4)}`;
-    } else {
-        // Eğer pin yoksa, konum alanını boşalt
-        noteLocationInput.value = '';
-    }
-});
-
-// Modal kapatma butonu için işlem
-$('#addNoteModal').on('hidden.bs.modal', function () {
-// Kapatma işlemini işle
-// Örneğin, form verilerini temizleme
-document.getElementById('noteContent').value = '';
-// Form alanını temizle
-noteLocationInput.value = '';
-// ... (diğer kapatma işlemleri) ...
 });
