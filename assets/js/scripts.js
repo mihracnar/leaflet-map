@@ -65,7 +65,7 @@ locateButton.addEventListener('click', function() {
 
 // Search Control
 const searchControl = new L.Control.Search({
-    url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+    url: 'https://nominatim.openstreetmap.org/search?&countrycodes=TR&format=json&q={s}',
     jsonpParam: 'json_callback',
     propertyName: 'display_name',
     propertyLoc: ['lat', 'lon'],
@@ -173,7 +173,7 @@ currentMarker = marker;
 marker.bindPopup(`<b>Konum:</b> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`).openPopup();
 
 
-// Pin VarsaButonu etkinleştir
+// Pin Butonu etkinleştir
 toggleButton.disabled = false; 
 
 // Formdaki konum girdisini güncelleyin
