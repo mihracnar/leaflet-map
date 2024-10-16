@@ -205,7 +205,7 @@ marker.on('popupclose', function () {
  // Supabase ayarları
  const supabaseUrl = 'https://fyprykalancslcxodoge.supabase.co';
  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHJ5a2FsYW5jc2xjeG9kb2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY5MDAwNTEsImV4cCI6MjA0MjQ3NjA1MX0.RT7IOmOh_iVrmUexXXRrv8f02NJY2k_i__1W1kCMsDo';
- const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
  noteForm.addEventListener('submit', async function (e) {
     e.preventDefault();
