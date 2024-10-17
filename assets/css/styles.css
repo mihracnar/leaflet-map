@@ -94,6 +94,14 @@ body, html, #map {
     margin-bottom: 5px; /* Alttaki butona boşluk */
 }
 
+.modal-title {
+    font-size: 24px;   /* Başlık font boyutu */
+    font-weight: bolder; /* Başlık font kalınlığı */
+    color: #000;       /* Başlık rengi */
+    text-align: center; /* Başlık hizalaması */
+  }
+
+
 /* Katmanlar modalı için özel stiller */
 #layersModal .modal-dialog {
     position: fixed;
@@ -111,6 +119,15 @@ body, html, #map {
 #layersModal.show .modal-dialog {
     transform: translateX(0); /* Modal görünür olduğunda kaydır */
 }
+
+.leaflet-control-layers.leaflet-control-layers-expanded.leaflet-control {
+    box-shadow: none;
+    width: 250px;  /* Genişlik ayarı */
+    background-color: #ffffff; /* Arka plan rengi */
+    padding: none;  /* İç boşluk */
+    border-radius: 5px; /* Yuvarlatılmış köşeler */
+    font-size: large;
+  }
 
 #map-toggle {
     position: absolute;
