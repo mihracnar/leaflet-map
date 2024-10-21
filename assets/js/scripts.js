@@ -292,7 +292,7 @@ function addGeoJSONToMap(geojson) {
             // Tüm notlar için mavi daire kullanın
             const circleMarker = L.circleMarker(location, {
                 radius: 8,
-                fillColor: "#505050",
+                fillColor: "a9a9a9",
                 color: "#ffffff", // Siyah kenarlık
                 weight: 3,
                 opacity: 1,
