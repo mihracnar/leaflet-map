@@ -210,7 +210,7 @@ marker.on('popupclose', function () {
  noteForm.addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    // Form verilerini işle (örneğin, not içeriğini al)
+// Form verilerini işle (örneğin, not içeriğini al)
     const noteContent = document.getElementById('noteContent').value;
     const y_koordinat = document.getElementById('y_koordinat').value;
     const x_koordinat = document.getElementById('x_koordinat').value;
@@ -281,21 +281,30 @@ marker.on('popupclose', function () {
         }
     }
 
-    // Supabase verilerini Leaflet haritasına ekleyen fonksiyon
-    function addGeoJSONToMap(geojson) {
-        console.log('Adding to map:', geojson);
-        
-        try {
-            geojson.forEach(note => {
-                const location = [note.location_y, note.location_x];
-                const marker = L.marker(location, { icon: blackIcon }).addTo(map);
+// Supabase verilerini Leaflet haritasına ekleyen fonksiyon
+function addGeoJSONToMap(geojson) {
+    console.log('Adding to map:', geojson);
 
-                marker.bindPopup(note.content);
-            });
-        } catch (e) {
-            console.error('Error adding GeoJSON to map:', e);
-        }
+    try {
+        geojson.forEach(note => {
+            const location = [note.location_y, note.location_x];
+
+            // Tüm notlar için mavi daire kullanın
+            const circleMarker = L.circleMarker(location, {
+                radius: 8,
+                fillColor: "#505050",
+                color: "#ffffff", // Siyah kenarlık
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map); 
+
+            circleMarker.bindPopup(note.content);
+        });
+    } catch (e) {
+        console.error('Error adding GeoJSON to map:', e);
     }
+}
 
     // Fetch işlemini başlat
     fetchGeoJSON();
