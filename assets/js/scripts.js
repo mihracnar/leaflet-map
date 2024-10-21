@@ -250,9 +250,52 @@ marker.on('popupclose', function () {
             
             // Formu temizle
             noteForm.reset();
+            
+            // Verileri tekrar çekip haritayı güncelle
+            fetchGeoJSON();
         }
     } catch (err) {
         console.error('Beklenmeyen hata:', err);
         alert('Beklenmeyen bir hata oluştu: ' + err.message);
     }
 });
+
+    // Supabase'den verileri çekme
+    async function fetchGeoJSON() {
+        console.log('Fetching data from Supabase...');
+        
+        let { data, error } = await supabaseClient.from('notes').select('*'); 
+        
+        if (error) {
+            console.error('Error fetching GeoJSON:', error);
+            return;
+        }
+
+        console.log("Supabase verileri: ", data);
+
+        if (data.length > 0) {
+            addGeoJSONToMap(data);
+        } else {
+            console.log('No data returned from Supabase');
+            return;
+        }
+    }
+
+    // Supabase verilerini Leaflet haritasına ekleyen fonksiyon
+    function addGeoJSONToMap(geojson) {
+        console.log('Adding to map:', geojson);
+        
+        try {
+            geojson.forEach(note => {
+                const location = [note.location_y, note.location_x];
+                const marker = L.marker(location, { icon: blackIcon }).addTo(map);
+
+                marker.bindPopup(note.content);
+            });
+        } catch (e) {
+            console.error('Error adding GeoJSON to map:', e);
+        }
+    }
+
+    // Fetch işlemini başlat
+    fetchGeoJSON();
