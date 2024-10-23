@@ -175,9 +175,9 @@ map.on('click', function (e) {
                 clickedExistingMarker = true;
                 
                 // Haritayı marker'ın konumuna yumuşak bir şekilde taşı
-                map.flyTo(markerLatLng, 16, {
+                map.flyTo(markerLatLng, 15, {
                     animate: true,
-                    duration: 1 // Animasyon süresi (saniye)
+                    duration: 3 // Animasyon süresi (saniye)
                 });
                 
                 // Mevcut notun modalını aç
