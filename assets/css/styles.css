@@ -138,6 +138,9 @@ body, html, #map {
     color: #444;
     background-color: #fff;
     border-radius: 8px;
+    word-wrap: break-word;  
+    overflow-wrap: break-word;
+
 }
 
 #noteModal .modal-footer {
@@ -292,14 +295,15 @@ body, html, #map {
         opacity: 0.85;
         width: 90vw;
         max-width: 90vw;
-        top: 90px;
+        top: 80px;
         left:auto;
         position: relative; 
 }
 
     #noteModal .modal-body {
-        max-height: 70vh;
+        max-height: (100vw - 120px);
         padding: 1rem;
+        
 }
 
 }
