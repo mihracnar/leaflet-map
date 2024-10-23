@@ -301,7 +301,7 @@ body, html, #map {
 }
 
     #noteModal .modal-body {
-        max-height: (100vw - 120px);
+        max-height: (90vw - 120px);
         padding: 1rem;
         
 }
