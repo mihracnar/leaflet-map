@@ -25,7 +25,7 @@ body, html, #map {
     /* Konumlandırma */
     position: absolute; 
     /* Sayfanın sol tarafında */
-    left: 200px; 
+    left: 180px; 
     /* Sayfanın üst tarafında */
     top: 35px;
     /* Arama kutusunun z-index değeri */
@@ -102,6 +102,83 @@ body, html, #map {
   }
 
 
+/* Sadece marker notu modalı için stil tanımları */
+#noteModal .modal-dialog {
+    opacity: 0.85;
+    width: 35vw;
+    max-width: 40vw;
+    margin: 1.75rem auto;
+    top: 90px;
+    left: 25px;
+    position: absolute; 
+}
+
+#noteModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+#noteModal .modal-header {
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    border-radius: 12px 12px 0 0;
+    padding: 1rem 1.5rem;
+}
+
+#noteModal .modal-body {
+    padding: 1.5rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+#noteModal #noteContent {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #444;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+#noteModal .modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+}
+
+#noteModal .btn-close {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+#noteModal .btn-close:hover {
+    opacity: 1;
+}
+
+#noteModal .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+#noteModal .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Sadece marker modalı için açılış animasyonu */
+#noteModal.fade .modal-dialog {
+    transform: translate(0, -50px);
+    transition: transform 0.3s ease-out;
+}
+
+#noteModal.show .modal-dialog {
+    transform: none;
+}
+
+
 /* Katmanlar modalı için özel stiller */
 #layersModal .modal-dialog {
     position: fixed;
@@ -151,6 +228,13 @@ body, html, #map {
     cursor: pointer; /* Fare işaretçisi */
 }
 
+#toggle-button:hover {
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Hafif bir gölge */
+    background-color: #424141; /* Açık gri */
+    transform: scale(1.02); /* Biraz büyüt */
+    transition: transform 0.2s ease; /* Dönüşüm süresi */
+}
+
 #map-menu-bottom .row {
     display: flex;
     flex-direction: column; /* Sütunları dikey olarak hizala */
@@ -161,7 +245,7 @@ body, html, #map {
     position: absolute;   /* Sabit pozisyon */
     top: 10px;            /* Üstten mesafe */
     left: 20px;           /* Soldan mesafe */
-    width: 170px;          /* Logonun genişliği */
+    width: 150px;          /* Logonun genişliği */
     height: auto;         /* Yüksekliğin genişliğe göre otomatik ayarlanması */
     z-index: 1000;        /* Haritanın üstünde görünmesi için yüksek z-index değeri */
   }
@@ -202,4 +286,20 @@ body, html, #map {
         height: 60px;         /* Yüksekliğin genişliğe göre otomatik ayarlanması */
         z-index: 1000;        /* Haritanın üstünde görünmesi için yüksek z-index değeri */
       }
-  }
+
+
+    #noteModal .modal-dialog {
+        opacity: 0.85;
+        width: 90vw;
+        max-width: 90vw;
+        top: 90px;
+        left:auto;
+        position: relative; 
+}
+
+    #noteModal .modal-body {
+        max-height: 70vh;
+        padding: 1rem;
+}
+
+}

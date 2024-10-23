@@ -157,44 +157,85 @@ toggleButton.addEventListener('click', function () {
       }
 });
 
-// Harita üzerinde tıklama olayını dinleyin
+// Harita üzerinde tıklama olayını dinle
 map.on('click', function (e) {
-    const latlng = e.latlng;
-
-    if (currentMarker) {
-        map.removeLayer(currentMarker);
-    }
-
-// Pin Oluştur
-const marker = L.marker(latlng, { icon: blackIcon }).addTo(map);
-currentMarker = marker;
-
-// Popup ile Pini ilişkilendir
-marker.bindPopup(`<b>Konum:</b> ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`).openPopup();
-
-
-// Pin Butonu etkinleştir
-toggleButton.disabled = false; 
-
-// Formdaki konum girdisini güncelleyin
-document.getElementById('noteLocation').value = `Lat: ${latlng.lat.toFixed(4)}, Lon: ${latlng.lng.toFixed(4)}`;
-
-
-// Gizli giriş alanlarını güncelleyin
-document.getElementById('y_koordinat').value = latlng.lat;
-document.getElementById('x_koordinat').value = latlng.lng;
-
-
-//Popup, Buton, 
-marker.on('popupclose', function () {
-    map.removeLayer(marker);
-        currentMarker = null;
-    toggleButton.disabled = true; // Butonu devre dışı bırak
-    toggleButton.classList.remove('active');
-    toggleButton.setAttribute('aria-pressed', 'false');
+    const clickedPoint = e.latlng;
+    let clickedExistingMarker = false;
+    
+    // Haritadaki tüm katmanları kontrol et
+    map.eachLayer(function(layer) {
+        // Eğer layer bir CircleMarker ise (mevcut notlar)
+        if (layer instanceof L.CircleMarker) {
+            const markerLatLng = layer.getLatLng();
+            // Tıklanan nokta ile marker arasındaki mesafeyi hesapla (metre cinsinden)
+            const distance = clickedPoint.distanceTo(markerLatLng);
+            
+            // Eğer tıklanan nokta marker'a yeterince yakınsa (örn: 20 metre)
+            if (distance < 20) {
+                clickedExistingMarker = true;
+                
+                // Haritayı marker'ın konumuna yumuşak bir şekilde taşı
+                map.flyTo(markerLatLng, 16, {
+                    animate: true,
+                    duration: 1 // Animasyon süresi (saniye)
+                });
+                
+                // Mevcut notun modalını aç
+                // Supabase'den bu konumdaki notu çek
+                supabaseClient
+                    .from('notes')
+                    .select('*')
+                    .eq('location_y', markerLatLng.lat)
+                    .eq('location_x', markerLatLng.lng)
+                    .single()
+                    .then(({ data, error }) => {
+                        if (error) {
+                            console.error('Error fetching note:', error);
+                            return;
+                        }
+                        if (data) {
+                            $('#noteModal .modal-title').text('Not Detayı');
+                            $('#noteModal #noteContent').text(data.content);
+                            $('#noteModal').modal('show');
+                        }
+                    });
+            }
+        }
     });
+    
+    // Eğer mevcut bir marker'a tıklanmadıysa, yeni pin ekle
+    if (!clickedExistingMarker) {
+        // Eğer önceden eklenmiş geçici bir marker varsa onu kaldır
+        if (currentMarker) {
+            map.removeLayer(currentMarker);
+        }
+        
+        // Yeni marker oluştur
+        const marker = L.marker(clickedPoint, { icon: blackIcon }).addTo(map);
+        currentMarker = marker;
+        
+        // Popup ile marker'ı ilişkilendir
+        marker.bindPopup(`<b>Konum:</b> ${clickedPoint.lat.toFixed(4)}, ${clickedPoint.lng.toFixed(4)}`).openPopup();
+        
+        // Not ekleme butonunu etkinleştir
+        toggleButton.disabled = false;
+        
+        // Form alanlarını güncelle
+        document.getElementById('noteLocation').value = `Lat: ${clickedPoint.lat.toFixed(4)}, Lon: ${clickedPoint.lng.toFixed(4)}`;
+        document.getElementById('y_koordinat').value = clickedPoint.lat;
+        document.getElementById('x_koordinat').value = clickedPoint.lng;
+        
+        // Popup kapandığında marker'ı kaldır ve butonu devre dışı bırak
+        marker.on('popupclose', function () {
+            map.removeLayer(marker);
+            currentMarker = null;
+            toggleButton.disabled = true;
+            toggleButton.classList.remove('active');
+            toggleButton.setAttribute('aria-pressed', 'false');
+        });
+    }
 });
- 
+
 
  // Not ekleme formu
  const noteForm = document.getElementById('noteForm');
@@ -260,7 +301,7 @@ marker.on('popupclose', function () {
     }
 });
 
-    // Supabase'den verileri çekme
+// Supabase'den verileri çekme
     async function fetchGeoJSON() {
         console.log('Fetching data from Supabase...');
         
@@ -298,8 +339,13 @@ function addGeoJSONToMap(geojson) {
                 opacity: 1,
                 fillOpacity: 0.8
             }).addTo(map); 
-
-            circleMarker.bindPopup(note.content);
+            // Marker'a tıklama olayını dinleyin
+            circleMarker.on('click', function() {
+                // Modal'ı açın
+                $('#noteModal .modal-title').text('Not Detayı');
+                $('#noteModal #noteContent').text(note.content);
+                $('#noteModal').modal('show');
+            });
         });
     } catch (e) {
         console.error('Error adding GeoJSON to map:', e);
