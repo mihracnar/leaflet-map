@@ -300,6 +300,7 @@ map.on('click', function (e) {
         alert('Beklenmeyen bir hata oluştu: ' + err.message);
     }
 });
+   
 
 // Supabase'den verileri çekme
     async function fetchGeoJSON() {
@@ -352,5 +353,6 @@ function addGeoJSONToMap(geojson) {
     }
 }
 
-    // Fetch işlemini başlat
-    fetchGeoJSON();
+// Fetch işlemini başlat
+fetchGeoJSON();
+
