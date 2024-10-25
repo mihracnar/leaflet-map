@@ -410,13 +410,6 @@ function addGeoJSONToMap(geojson) {
     }
 }
 
-// Not görüntüleme modali kapatıldığında içerik sıfırlansın
-document.getElementById('noteModal').addEventListener('hide.bs.modal', function () {
-    document.getElementById('noteModalLabel').textContent = ''; // Başlık sıfırlanır
-    document.getElementById('noteCategory').textContent = '';   // Kategori sıfırlanır
-    document.getElementById('noteContent').textContent = '';    // İçerik sıfırlanır
-});
-
 
 // Fetch işlemini başlat
 fetchGeoJSON();
