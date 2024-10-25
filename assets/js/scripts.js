@@ -154,6 +154,9 @@ toggleButton.addEventListener('click', function () {
           mapDiv.style.display = 'block';
           toggleButton.textContent = 'Not Ekle';
     }
+    document.getElementById('noteContent').value = '';
+    document.getElementById('noteTitle').value = '';
+    document.getElementById('noteCategory').value = 'Genel';
       }
 });
 
@@ -194,8 +197,10 @@ map.on('click', function (e) {
                             return;
                         }
                         if (data) {
-                            $('#noteModal .modal-title').text('Not Detayı');
+                            // Modal başlığını 'data.title' ile güncelleyin
+                            $('#noteModal .modal-title').text(data.title);
                             $('#noteModal #noteContent').text(data.content);
+                            $('#noteModal #noteCategory').text(data.category);
                             $('#noteModal').modal('show');
                         }
                     });
@@ -224,6 +229,10 @@ map.on('click', function (e) {
         document.getElementById('noteLocation').value = `Lat: ${clickedPoint.lat.toFixed(4)}, Lon: ${clickedPoint.lng.toFixed(4)}`;
         document.getElementById('y_koordinat').value = clickedPoint.lat;
         document.getElementById('x_koordinat').value = clickedPoint.lng;
+
+        // **Formu temizle (Önemli!)**
+        document.getElementById('noteContent').value = '';
+        document.getElementById('noteTitle').value = '';
         
         // Popup kapandığında marker'ı kaldır ve butonu devre dışı bırak
         marker.on('popupclose', function () {
@@ -232,14 +241,23 @@ map.on('click', function (e) {
             toggleButton.disabled = true;
             toggleButton.classList.remove('active');
             toggleButton.setAttribute('aria-pressed', 'false');
+            
+            // **Formu temizle (Önemli!)**
+            document.getElementById('noteContent').value = '';
+            document.getElementById('noteTitle').value = '';
+            
+            // **Kategori seçeneğini varsayılan haline getir**
+            document.getElementById('noteCategory').value = 'Genel';
         });
     }
 });
 
 
- // Not ekleme formu
- const noteForm = document.getElementById('noteForm');
- const noteLocationInput = document.getElementById('noteLocation');
+// Not ekleme formu
+const noteForm = document.getElementById('noteForm');
+const noteLocationInput = document.getElementById('noteLocation');
+const noteTitleInput = document.getElementById('noteTitle');
+const noteCategorySelect = document.getElementById('noteCategory');
 
 
 
@@ -251,8 +269,10 @@ map.on('click', function (e) {
  noteForm.addEventListener('submit', async function (e) {
     e.preventDefault();
 
-// Form verilerini işle (örneğin, not içeriğini al)
+    // Form verilerini işle 
     const noteContent = document.getElementById('noteContent').value;
+    const noteTitle = noteTitleInput.value;
+    const noteCategory = noteCategorySelect.value;
     const y_koordinat = document.getElementById('y_koordinat').value;
     const x_koordinat = document.getElementById('x_koordinat').value;
   
@@ -264,7 +284,9 @@ map.on('click', function (e) {
                 { 
                     content: noteContent, 
                     location_y: y_koordinat, 
-                    location_x: x_koordinat 
+                    location_x: x_koordinat,
+                    title: noteTitle,
+                    category: noteCategory
                 }
             ]);
 
@@ -343,8 +365,14 @@ function addGeoJSONToMap(geojson) {
             // Marker'a tıklama olayını dinleyin
             circleMarker.on('click', function() {
                 // Modal'ı açın
-                $('#noteModal .modal-title').text('Not Detayı');
-                $('#noteModal #noteContent').text(note.content);
+                $('#noteModal .modal-title').text(note.title);
+                
+                // Kategoriyi bold olarak göster
+                $('#noteCategory').text(note.category); 
+            
+                // Content'ı normal olarak göster
+                $('#noteContent').text(note.content);
+            
                 $('#noteModal').modal('show');
             });
         });
