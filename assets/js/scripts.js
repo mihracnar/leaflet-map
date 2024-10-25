@@ -355,7 +355,3 @@ function addGeoJSONToMap(geojson) {
 
 // Fetch işlemini başlat
 fetchGeoJSON();
-
-
-
-
