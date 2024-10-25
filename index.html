@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <!-- Not Ekleme Butonu -->
+ <!-- Not Ekleme Butonu -->
     <div id="map-toggle">
         <button type="button" class="btn btn-dark" disabled data-bs-toggle="button" 
                 aria-pressed="false" autocomplete="off" id="toggle-button">
@@ -103,62 +103,63 @@
         </button>
       </div>
 
-     <!-- Not Ekleme Formu Modali -->
-     <div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addNoteModalLabel">Not Ekle</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-
-                </div>
-                <div class="modal-body">
-                    <!-- Not ekleme formu buraya gelecek -->
-                    <form id="noteForm">
-                        <div class="form-group">
-                            <label for="noteLocation">Konum:</label>
-                            <input type="text" class="form-control" id="noteLocation" readonly> 
-                        </div>
-                        <div class="form-group">
-                            <label for="noteTitle">Başlık:</label>
-                            <input type="text" class="form-control" id="noteTitle">
-                        </div>
-                        <div class="form-group">
-                            <label for="noteContent">Not:</label>
-                            <textarea class="form-control" id="noteContent" rows="3"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="noteCategory">Kategori:</label>
-                            <select class="form-control" id="noteCategory">
-                                <option value="Genel">Genel</option>
-                                <option value="İş">İş</option>
-                                <option value="Kişisel">Kişisel</option>
-                            </select>
-                        </div>
-                        <input type="hidden" id="y_koordinat"> <input type="hidden" id="x_koordinat">
-                        <button type="submit" class="btn btn-dark">Kaydet</button>
-                    </form>
-                </div>
+<!-- Not Ekleme Modali -->
+    <div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNoteModalLabel">Not Ekle</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="noteForm">
+                    <div class="form-group mb-3">
+                        <label for="noteLocation">Konum:</label>
+                        <input type="text" class="form-control" id="noteLocation" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="noteTitle">Başlık:</label>
+                        <input type="text" class="form-control" id="noteTitle">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="noteContent">Not:</label>
+                        <textarea class="form-control" id="noteContent" rows="3"></textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="noteCategory">Kategori:</label>
+                        <select class="form-control form-select" id="noteCategory">
+                            <option value="Genel">Genel</option>
+                            <option value="İş">İş</option>
+                            <option value="Kişisel">Kişisel</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="y_koordinat">
+                    <input type="hidden" id="x_koordinat">
+                    <button type="submit" class="btn btn-dark">Kaydet</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="noteModalLabel"></h5> <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Kategori:</strong> <span id="noteCategory"></span></p> 
-                    <p id="noteContent"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                </div>
+
+<!-- Not Görüntüleme Modali -->
+<div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noteModalLabel"></h5> <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Kategori:</strong> <span id="noteCategory"></span></p> 
+                <p id="noteContent"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
             </div>
         </div>
     </div>
+</div>
 
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-search@3.0.2/dist/leaflet-search.min.js"></script>

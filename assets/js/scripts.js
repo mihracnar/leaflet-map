@@ -179,8 +179,8 @@ map.on('click', function (e) {
                 
                 // Haritayı marker'ın konumuna yumuşak bir şekilde taşı
                 map.flyTo(markerLatLng, 15, {
-                    animate: true,
-                    duration: 3 // Animasyon süresi (saniye)
+                    duration: 1.5, // Animasyon süresi (saniye cinsinden)
+                    easeLinearity: 0.2 // Yumuşaklık (0-1 arası)
                 });
                 
                 // Mevcut notun modalını aç
@@ -204,6 +204,7 @@ map.on('click', function (e) {
                             $('#noteModal').modal('show');
                         }
                     });
+        
             }
         }
     });
@@ -251,6 +252,31 @@ map.on('click', function (e) {
         });
     }
 });
+
+// Kategorileri tanımlayın
+const categories = ["Genel", "İş", "Kişisel"];
+
+// Dropdown menüsünü dolduracak fonksiyon
+function loadCategories() {
+    const categorySelect = document.getElementById('noteCategory');
+    
+    // Mevcut seçenekleri temizle
+    categorySelect.innerHTML = "";
+
+    // Kategorileri ekle
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categorySelect.appendChild(option);
+    });
+}
+
+// Sayfa yüklendiğinde kategorileri yükle
+document.addEventListener('DOMContentLoaded', function() {
+    loadCategories();  // Kategorileri sayfa yüklendiğinde yükle
+});
+
 
 
 // Not ekleme formu
@@ -316,6 +342,9 @@ const noteCategorySelect = document.getElementById('noteCategory');
             
             // Verileri tekrar çekip haritayı güncelle
             fetchGeoJSON();
+            
+            // Kategorileri yeniden yükleyin
+            loadCategories();
         }
     } catch (err) {
         console.error('Beklenmeyen hata:', err);
