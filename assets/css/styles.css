@@ -212,7 +212,8 @@ body, html, #map {
 #map-toggle {
     position: absolute;
     bottom: 10px;
-    left: 50vw;
+    margin-left: auto;
+    margin-right: auto;
     transform: translateX(-50%); /* Butonu yatay olarak ortala */
     z-index: 1000; /* Diğer öğelerin üstünde olsun */
     color: #000000;
