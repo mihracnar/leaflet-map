@@ -185,13 +185,13 @@ body, html, #map {
 /* Katmanlar modalı için özel stiller */
 #layersModal .modal-dialog {
     position: fixed;
-    top: 0;
+    bottom: 0;
     right: 0;
-    height: 100%;
+    height: auto;
     margin: 0;
     padding-right: 20px;
     overflow: hidden;
-    padding-top: 60px;
+    padding-bottom: 225px;
     transform: translateX(100%); /* Başlangıçta modalı gizlemek için */
     transition: transform 0.3s ease-out; /* Geçiş efekti */
 }
