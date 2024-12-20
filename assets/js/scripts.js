@@ -354,57 +354,69 @@ const noteCategorySelect = document.getElementById('noteCategory');
    
 
 // Supabase'den verileri çekme
-    async function fetchGeoJSON() {
-        console.log('Fetching data from Supabase...');
-        
-        let { data, error } = await supabaseClient.from('notes').select('*'); 
-        
+async function fetchGeoJSON() {
+    console.log('Fetching GeoJSON data...');
+
+    try {
+        const { data, error } = await supabase.rpc('export_to_geojson');
+
         if (error) {
-            console.error('Error fetching GeoJSON:', error);
+            console.error('Error calling Supabase function:', error);
             return;
         }
 
-        console.log("Supabase verileri: ", data);
-
-        if (data.length > 0) {
-            addGeoJSONToMap(data);
-        } else {
-            console.log('No data returned from Supabase');
+        if (!data || data.length === 0) {
+            console.error('Supabase function returned no data.');
             return;
         }
+
+        let geojsonData;
+        try {
+            geojsonData = JSON.parse(data); // Supabase fonksiyonunun JSON çıktısını ayrıştır
+
+            // GeoJSON yapısının geçerliliğini kontrol edin
+            if (!geojsonData || !geojsonData.type || !geojsonData.features || geojsonData.features.length === 0) {
+                console.error('Invalid GeoJSON format or no features received:', geojsonData);
+                return;
+            }
+
+            addGeoJSONToMap(geojsonData);
+        } catch (parseError) {
+            console.error('Error parsing JSON response from Supabase function:', parseError);
+            console.error('Raw response:', data); // Ham yanıtı konsola yazdırın hata ayıklama için
+            return;
+        }
+
+    } catch (e) {
+        console.error('An unexpected error occurred:', e);
     }
+}
 
 // Supabase verilerini Leaflet haritasına ekleyen fonksiyon
 function addGeoJSONToMap(geojson) {
     console.log('Adding to map:', geojson);
 
     try {
-        geojson.forEach(note => {
-            const location = [note.location_y, note.location_x];
-
-            // Tüm notlar için mavi daire kullanın
-            const circleMarker = L.circleMarker(location, {
-                radius: 8,
-                fillColor: "a9a9a9",
-                color: "#ffffff", // Siyah kenarlık
-                weight: 3,
-                opacity: 1,
-                fillOpacity: 0.8
-            }).addTo(map); 
-            // Marker'a tıklama olayını dinleyin
-            circleMarker.on('click', function() {
-                // Modal'ı açın
-                $('#noteModal .modal-title').text(note.title);
-                
-                // Kategoriyi bold olarak göster
-                $('#noteCategory').text(note.category); 
-            
-                // Content'ı normal olarak göster
-                $('#noteContent').text(note.content);
-            
-                $('#noteModal').modal('show');
-            });
-        });
+        L.geoJSON(geojson, {
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, {
+                    radius: 8,
+                    fillColor: "a9a9a9",
+                    color: "#ffffff",
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                layer.on('click', function () {
+                    $('#noteModal .modal-title').text(feature.properties.title);
+                    $('#noteCategory').text(feature.properties.category);
+                    $('#noteContent').text(feature.properties.content);
+                    $('#noteModal').modal('show');
+                });
+            }
+        }).addTo(map);
     } catch (e) {
         console.error('Error adding GeoJSON to map:', e);
     }
@@ -413,3 +425,4 @@ function addGeoJSONToMap(geojson) {
 
 // Fetch işlemini başlat
 fetchGeoJSON();
+addGeoJSONToMap();
