@@ -468,25 +468,22 @@ async function signOut() {
 }
 
 // UI Güncelleme Fonksiyonları
-function updateUIForAuthenticatedUser(user) {
-    const toggleButton = document.getElementById('toggle-button');
-    toggleButton.disabled = false;
-    
-    // Kullanıcı menüsünü güncelle
-    const userButton = document.querySelector('[data-target="#loginSignUpModal"] i');
-    userButton.className = 'fas fa-user-check';
-
-    // Notları yeniden yükle
-    fetchGeoJSON();
-}
-
 function updateUIForSignedOutUser() {
+    // Not ekleme butonunu devre dışı bırak
     const toggleButton = document.getElementById('toggle-button');
-    toggleButton.disabled = true;
+    if (toggleButton) {
+        toggleButton.disabled = true;
+    }
     
     // Kullanıcı menüsünü güncelle
-    const userButton = document.querySelector('[data-target="#loginSignUpModal"] i');
-    userButton.className = 'fas fa-user-circle';
+    const userBtn = document.querySelector('button[data-target="#loginSignUpModal"], button[data-target="#profileModal"]');
+    if (userBtn) {
+        userBtn.setAttribute('data-target', '#loginSignUpModal');
+        const userIcon = userBtn.querySelector('i');
+        if (userIcon) {
+            userIcon.className = 'fas fa-user-circle';
+        }
+    }
     
     // Haritadaki tüm notları temizle
     clearMapNotes();
