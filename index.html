@@ -25,7 +25,7 @@
     <div id="map-menu-top">
         <div class="row no-gutters">
             <div class="col">
-                <button type="button" class="btn btn-light btn-circle" data-toggle="modal" data-target="#loginModal">
+                <button type="button" class="btn btn-light btn-circle" data-toggle="modal" data-target="#loginSignUpModal">
                     <i class="fas fa-user-circle"></i>
                 </button>
             </div> 
@@ -100,40 +100,81 @@
         </div>
     </div>
 
-    <!-- Login Modali -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document"> 
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Kullanıcı Girişi</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Login Formu -->
-                    <form action="/login" method="post">
-                        <div class="form-group">
-                            <label for="username">Kullanıcı Adı</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
+<!-- Login/Sign Up Modal -->
+<div class="modal fade" id="loginSignUpModal" tabindex="-1" role="dialog" aria-labelledby="loginSignUpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document"> 
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginSignUpModalLabel">Kullanıcı Girişi ve Kayıt</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Tabs for login and signup -->
+                <ul class="nav nav-tabs" id="loginSignupTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="loginTab" data-bs-toggle="tab" href="#loginForm" role="tab" aria-controls="loginForm" aria-selected="true">Giriş Yap</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="signUpTab" data-bs-toggle="tab" href="#signUpForm" role="tab" aria-controls="signUpForm" aria-selected="false">Kayıt Ol</a>
+                    </li>
+                </ul>
+
+                <!-- Tab content -->
+                <div class="tab-content" id="loginSignupTabContent">
+                    <!-- Login Form -->
+                    <div class="tab-pane fade show active" id="loginForm" role="tabpanel" aria-labelledby="loginTab">
+                        <form id="loginForm" method="post">
+                            <div class="form-group">
+                                <label for="loginUsername">Kullanıcı Adı</label>
+                                <input type="text" class="form-control" id="loginUsername" name="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">Şifre</label>
+                                <input type="password" class="form-control" id="loginPassword" name="password" required>
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Beni Hatırla</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                        </form>
+                        <div class="text-center">
+                            <p>Hesabınız yok mu? <a href="#signUpForm" class="tab-switch" data-bs-target="#signUpTab">Kayıt Ol</a></p>
                         </div>
-                        <div class="form-group">
-                            <label for="password">Şifre</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+
+                    <!-- Sign Up Form -->
+                    <div class="tab-pane fade" id="signUpForm" role="tabpanel" aria-labelledby="signUpTab">
+                        <form id="signUpForm" method="post">
+                            <div class="form-group">
+                                <label for="signUpUsername">Kullanıcı Adı</label>
+                                <input type="text" class="form-control" id="signUpUsername" name="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signUpEmail">E-posta</label>
+                                <input type="email" class="form-control" id="signUpEmail" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signUpPassword">Şifre</label>
+                                <input type="password" class="form-control" id="signUpPassword" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-success">Kayıt Ol</button>
+                        </form>
+                        <div class="text-center">
+                            <p>Zaten bir hesabınız var mı? <a href="#loginForm" class="tab-switch" data-bs-target="#loginTab">Giriş Yap</a></p>
                         </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Beni Hatırla</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Giriş Yap</button>
-                    </form>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
             </div>
         </div>
     </div>
+</div>
+
 
  <!-- Not Ekleme Butonu -->
     <div id="map-toggle">

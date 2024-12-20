@@ -277,7 +277,25 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCategories();  // Kategorileri sayfa yüklendiğinde yükle
 });
 
+// Initialize Bootstrap tabs
+var triggerTabList = [].slice.call(document.querySelectorAll('#loginSignupTabs a'))
+triggerTabList.forEach(function (triggerEl) {
+    var tabTrigger = new bootstrap.Tab(triggerEl)
+    triggerEl.addEventListener('click', function (event) {
+        event.preventDefault()
+        tabTrigger.show()
+    })
+})
 
+// Handle tab switching from the "Kayıt Ol" and "Giriş Yap" links
+document.querySelectorAll('.tab-switch').forEach(function(link) {
+    link.addEventListener('click', function(event) {
+        event.preventDefault()
+        var targetTabId = this.getAttribute('data-bs-target')
+        var tab = new bootstrap.Tab(document.querySelector(targetTabId))
+        tab.show()
+    })
+})
 
 // Not ekleme formu
 const noteForm = document.getElementById('noteForm');
