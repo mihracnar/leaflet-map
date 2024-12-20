@@ -21,17 +21,22 @@
 <body>
     <div id="map"></div>
 
-    <!-- Bootstrap Grid Menü (3x2) -->
+    <!-- Bootstrap Grid Menü (3x1) -->
     <div id="map-menu-top">
         <div class="row no-gutters">
-            <div class="col-6">
-                <button type="button" class="btn btn-light btn-circle" data-toggle="modal" data-target="#aboutModal">
-                    <i class="fas fa-info-circle"></i>
+            <div class="col">
+                <button type="button" class="btn btn-light btn-circle" data-toggle="modal" data-target="#loginModal">
+                    <i class="fas fa-user-circle"></i>
                 </button>
             </div>
-            <div class="col-6">
+            <div class="col">
                 <button type="button" class="btn btn-light btn-circle" data-toggle="modal" data-target="#layersModal">
                     <i class="fas fa-layer-group"></i>
+                </button>
+            </div>    
+            <div class="col">
+                <button type="button" class="btn btn-light btn-circle" data-toggle="modal" data-target="#aboutModal">
+                    <i class="fas fa-info-circle"></i>
                 </button>
             </div>
         </div>
@@ -87,6 +92,41 @@
                 </div>
                 <div class="modal-body">
                     <p>Bu uygulama, Leaflet, Bootstrap ve Font Awesome kullanılarak oluşturulmuştur.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modali -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document"> 
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Kullanıcı Girişi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Login Formu -->
+                    <form action="/login" method="post">
+                        <div class="form-group">
+                            <label for="username">Kullanıcı Adı</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Şifre</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Beni Hatırla</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
