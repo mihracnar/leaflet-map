@@ -334,6 +334,107 @@ async function signUp(email, password, username) {
     }
 }
 
+// Profil modal işlemleri için gerekli değişkenler
+const userButton = document.querySelector('[data-target="#loginSignUpModal"]');
+const profileModal = document.getElementById('profileModal');
+const signOutButton = document.getElementById('signOutButton');
+
+
+// UI Güncelleme Fonksiyonları
+function updateUIForAuthenticatedUser(user) {
+    const toggleButton = document.getElementById('toggle-button');
+    toggleButton.disabled = false;
+    
+    // Kullanıcı menüsünü güncelle
+    const userBtn = document.querySelector('button[data-target="#loginSignUpModal"]');
+    if (userBtn) {
+        const userIcon = userBtn.querySelector('i');
+        if (userIcon) {
+            userIcon.className = 'fas fa-user-check';
+        }
+    }
+
+    // Notları yeniden yükle
+    fetchGeoJSON();
+}
+
+function updateUIForSignedOutUser() {
+    const toggleButton = document.getElementById('toggle-button');
+    toggleButton.disabled = true;
+    
+    // Kullanıcı menüsünü güncelle
+    const userBtn = document.querySelector('button[data-target="#profileModal"]');
+    if (userBtn) {
+        userBtn.setAttribute('data-target', '#loginSignUpModal');
+        const userIcon = userBtn.querySelector('i');
+        if (userIcon) {
+            userIcon.className = 'fas fa-user-circle';
+        }
+    }
+    
+    // Haritadaki tüm notları temizle
+    clearMapNotes();
+}
+
+
+// Kullanıcı durumuna göre buton davranışını güncelle
+async function updateUserButtonBehavior() {
+    const { data: { user }, error } = await supabaseClient.auth.getUser();
+    
+    const userBtn = document.querySelector('button[data-target="#loginSignUpModal"], button[data-target="#profileModal"]');
+    if (!userBtn) return;
+    
+    if (user) {
+        // Kullanıcı giriş yapmışsa
+        userBtn.setAttribute('data-target', '#profileModal');
+        const userIcon = userBtn.querySelector('i');
+        if (userIcon) {
+            userIcon.className = 'fas fa-user-check';
+        }
+        
+        // Profil bilgilerini güncelle
+        const usernameElement = document.getElementById('profileUsername');
+        const emailElement = document.getElementById('profileEmail');
+        if (usernameElement) {
+            usernameElement.textContent = user.user_metadata?.username || 'N/A';
+        }
+        if (emailElement) {
+            emailElement.textContent = user.email;
+        }
+    } else {
+        // Kullanıcı giriş yapmamışsa
+        userBtn.setAttribute('data-target', '#loginSignUpModal');
+        const userIcon = userBtn.querySelector('i');
+        if (userIcon) {
+            userIcon.className = 'fas fa-user-circle';
+        }
+    }
+}
+
+// Çıkış yapma işlemi
+signOutButton.addEventListener('click', async () => {
+    try {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) throw error;
+        
+        // Modalı kapat
+        $('#profileModal').modal('hide');
+        
+        // UI'ı güncelle
+        updateUIForSignedOutUser();
+        updateUserButtonBehavior();
+        
+        alert('Başarıyla çıkış yapıldı.');
+    } catch (error) {
+        console.error('Çıkış yapma hatası:', error);
+        alert('Çıkış yapılırken bir hata oluştu: ' + error.message);
+    }
+});
+
+// Sayfa yüklendiğinde ve giriş/çıkış işlemlerinden sonra buton davranışını güncelle
+document.addEventListener('DOMContentLoaded', updateUserButtonBehavior);
+
+// Mevcut signin fonksiyonunu güncelle
 async function signIn(email, password) {
     try {
         const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
@@ -346,6 +447,7 @@ async function signIn(email, password) {
         alert('Giriş başarılı!');
         $('#loginSignUpModal').modal('hide');
         updateUIForAuthenticatedUser(authData.user);
+        updateUserButtonBehavior();
         return authData;
     } catch (error) {
         alert('Giriş sırasında hata: ' + error.message);
