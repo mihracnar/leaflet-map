@@ -310,105 +310,250 @@ const noteCategorySelect = document.getElementById('noteCategory');
  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHJ5a2FsYW5jc2xjeG9kb2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY5MDAwNTEsImV4cCI6MjA0MjQ3NjA1MX0.RT7IOmOh_iVrmUexXXRrv8f02NJY2k_i__1W1kCMsDo';
  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
- noteForm.addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    // Form verilerini işle 
-    const noteContent = document.getElementById('noteContent').value;
-    const noteTitle = noteTitleInput.value;
-    const noteCategory = noteCategorySelect.value;
-    const y_koordinat = document.getElementById('y_koordinat').value;
-    const x_koordinat = document.getElementById('x_koordinat').value;
-  
+// Supabase Auth işlemleri için gerekli fonksiyonlar
+async function signUp(email, password, username) {
     try {
-        // Supabase'e veri gönderme
+        const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    username: username
+                }
+            }
+        });
+
+        if (authError) throw authError;
+
+        alert('Kayıt başarılı! Lütfen email adresinizi doğrulayın.');
+        $('#loginSignUpModal').modal('hide');
+        return authData;
+    } catch (error) {
+        alert('Kayıt sırasında hata: ' + error.message);
+        throw error;
+    }
+}
+
+async function signIn(email, password) {
+    try {
+        const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (authError) throw authError;
+
+        alert('Giriş başarılı!');
+        $('#loginSignUpModal').modal('hide');
+        updateUIForAuthenticatedUser(authData.user);
+        return authData;
+    } catch (error) {
+        alert('Giriş sırasında hata: ' + error.message);
+        throw error;
+    }
+}
+
+async function signOut() {
+    try {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) throw error;
+
+        updateUIForSignedOutUser();
+        alert('Çıkış yapıldı');
+    } catch (error) {
+        alert('Çıkış sırasında hata: ' + error.message);
+    }
+}
+
+// UI Güncelleme Fonksiyonları
+function updateUIForAuthenticatedUser(user) {
+    const toggleButton = document.getElementById('toggle-button');
+    toggleButton.disabled = false;
+    
+    // Kullanıcı menüsünü güncelle
+    const userButton = document.querySelector('[data-target="#loginSignUpModal"] i');
+    userButton.className = 'fas fa-user-check';
+
+    // Notları yeniden yükle
+    fetchGeoJSON();
+}
+
+function updateUIForSignedOutUser() {
+    const toggleButton = document.getElementById('toggle-button');
+    toggleButton.disabled = true;
+    
+    // Kullanıcı menüsünü güncelle
+    const userButton = document.querySelector('[data-target="#loginSignUpModal"] i');
+    userButton.className = 'fas fa-user-circle';
+    
+    // Haritadaki tüm notları temizle
+    clearMapNotes();
+}
+
+// Form event listeners
+document.getElementById('signUpForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('signUpEmail').value;
+    const password = document.getElementById('signUpPassword').value;
+    const username = document.getElementById('signUpUsername').value;
+    await signUp(email, password, username);
+});
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    await signIn(email, password);
+});
+
+
+
+ // Not ekleme fonksiyonunu
+ document.getElementById('noteForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    console.log('Form submitted');
+    let addNoteModalInstance = null;
+    try {
+        // Kullanıcı kontrolü
+        const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+        
+        if (userError || !user) {
+            alert('Not eklemek için giriş yapmalısınız!');
+            return;
+        }
+
+        // Form verilerini al
+        const noteContent = document.getElementById('noteContent').value;
+        const noteTitle = document.getElementById('noteTitle').value;
+        const noteCategory = document.getElementById('noteCategory').value;
+        const y_koordinat = parseFloat(document.getElementById('y_koordinat').value);
+        const x_koordinat = parseFloat(document.getElementById('x_koordinat').value);
+
+        console.log('Sending note data:', {
+            content: noteContent,
+            title: noteTitle,
+            category: noteCategory,
+            location_y: y_koordinat,
+            location_x: x_koordinat,
+            user_id: user.id
+        });
+
+        // Supabase'e veri gönder
         const { data, error } = await supabaseClient
             .from('notes')
             .insert([
-                { 
-                    content: noteContent, 
-                    location_y: y_koordinat, 
-                    location_x: x_koordinat,
+                {
+                    content: noteContent,
                     title: noteTitle,
-                    category: noteCategory
+                    category: noteCategory,
+                    location_y: y_koordinat,
+                    location_x: x_koordinat,
+                    user_id: user.id
                 }
             ]);
 
         if (error) {
-            console.error('Supabase error:', error);
-            alert('Not eklenirken bir hata oluştu: ' + error.message);
-        } else {
-            console.log('Not başarıyla eklendi:', data);
-            alert('Not başarıyla eklendi!');
-            
-            // Modal'ı kapat
-            $('#addNoteModal').modal('hide');
-            
-            // Butonu pasifleştir
-            toggleButton.disabled = true;
-            toggleButton.classList.remove('active');
-            toggleButton.setAttribute('aria-pressed', 'false');
-            
-            // Pin'i kaldır
-            if (currentMarker) {
-                map.removeLayer(currentMarker);
-                currentMarker = null;
-            }
-            
-            // Formu temizle
-            noteForm.reset();
-            
-            // Verileri tekrar çekip haritayı güncelle
-            fetchGeoJSON();
-            
-            // Kategorileri yeniden yükleyin
-            loadCategories();
+            throw error;
         }
-    } catch (err) {
-        console.error('Beklenmeyen hata:', err);
-        alert('Beklenmeyen bir hata oluştu: ' + err.message);
+
+        // Başarılı ekleme sonrası işlemler
+        console.log('Note added successfully:', data);
+        alert('Not başarıyla eklendi!');
+        $('#addNoteModal').modal('hide');
+    
+
+        // Haritadaki geçici markeri kaldır
+        if (currentMarker) {
+            map.removeLayer(currentMarker);
+            currentMarker = null;
+        }
+
+        // Form alanlarını temizle
+        document.getElementById('noteForm').reset();
+        
+        // Not ekleme butonunu sıfırla
+        const toggleButton = document.getElementById('toggle-button');
+        toggleButton.disabled = true;
+        toggleButton.classList.remove('active');
+        toggleButton.setAttribute('aria-pressed', 'false');
+
+        // Haritayı güncelle
+        await fetchGeoJSON();
+
+    } catch (error) {
+        console.error('Error adding note:', error);
+        alert('Not eklenirken bir hata oluştu: ' + error.message);
     }
 });
    
 
-// Supabase'den verileri çekme
+// Not getirme fonksiyonunu güncelle
 async function fetchGeoJSON() {
-    console.log('Fetching GeoJSON data...');
-
     try {
-        const { data, error } = await supabase.rpc('export_to_geojson');
+        const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+        
+        if (userError || !user) {
+            console.log('No authenticated user');
+            return;
+        }
+
+        console.log('Fetching notes for user:', user.id);
+        
+        const { data, error } = await supabaseClient.rpc('export_to_geojson', {
+            user_id_param: user.id
+        });
 
         if (error) {
-            console.error('Error calling Supabase function:', error);
-            return;
+            throw error;
         }
 
-        if (!data || data.length === 0) {
-            console.error('Supabase function returned no data.');
-            return;
-        }
-
-        let geojsonData;
-        try {
-            geojsonData = JSON.parse(data); // Supabase fonksiyonunun JSON çıktısını ayrıştır
-
-            // GeoJSON yapısının geçerliliğini kontrol edin
-            if (!geojsonData || !geojsonData.type || !geojsonData.features || geojsonData.features.length === 0) {
-                console.error('Invalid GeoJSON format or no features received:', geojsonData);
-                return;
+        if (data) {
+            // Clear existing notes
+            clearMapNotes();
+            
+            // Check if data is already an object
+            const geojsonData = typeof data === 'string' ? JSON.parse(data) : data;
+            
+            // Validate GeoJSON structure
+            if (!geojsonData.type || !geojsonData.features) {
+                throw new Error('Invalid GeoJSON structure');
             }
-
+            
+            console.log('Processed GeoJSON data:', geojsonData);
             addGeoJSONToMap(geojsonData);
-        } catch (parseError) {
-            console.error('Error parsing JSON response from Supabase function:', parseError);
-            console.error('Raw response:', data); // Ham yanıtı konsola yazdırın hata ayıklama için
-            return;
         }
-
-    } catch (e) {
-        console.error('An unexpected error occurred:', e);
+    } catch (error) {
+        console.error('Error fetching notes:', error);
+        // Optionally show user-friendly error message
+        alert('Notlar yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
     }
 }
+
+
+// Haritadaki notları temizleme fonksiyonu
+function clearMapNotes() {
+    map.eachLayer((layer) => {
+        if (layer instanceof L.CircleMarker) {
+            map.removeLayer(layer);
+        }
+    });
+}
+
+function resetUIAfterNoteAdd() {
+    toggleButton.disabled = true;
+    toggleButton.classList.remove('active');
+    toggleButton.setAttribute('aria-pressed', 'false');
+    
+    if (currentMarker) {
+        map.removeLayer(currentMarker);
+        currentMarker = null;
+    }
+    
+    noteForm.reset();
+}
+
+
+
 
 // Supabase verilerini Leaflet haritasına ekleyen fonksiyon
 function addGeoJSONToMap(geojson) {
@@ -417,9 +562,15 @@ function addGeoJSONToMap(geojson) {
     try {
         L.geoJSON(geojson, {
             pointToLayer: function (feature, latlng) {
+                // Validate coordinates
+                if (!latlng || typeof latlng.lat !== 'number' || typeof latlng.lng !== 'number') {
+                    console.error('Invalid coordinates:', latlng);
+                    return null;
+                }
+
                 return L.circleMarker(latlng, {
                     radius: 8,
-                    fillColor: "a9a9a9",
+                    fillColor: "##000000", // Fixed color value
                     color: "#ffffff",
                     weight: 3,
                     opacity: 1,
@@ -427,20 +578,42 @@ function addGeoJSONToMap(geojson) {
                 });
             },
             onEachFeature: function (feature, layer) {
+                // Validate feature properties
+                if (!feature.properties) {
+                    console.error('Missing properties in feature:', feature);
+                    return;
+                }
+
+                const title = feature.properties.title || 'Untitled';
+                const category = feature.properties.category || 'Uncategorized';
+                const content = feature.properties.content || 'No content';
+
                 layer.on('click', function () {
-                    $('#noteModal .modal-title').text(feature.properties.title);
-                    $('#noteCategory').text(feature.properties.category);
-                    $('#noteContent').text(feature.properties.content);
+                    $('#noteModal .modal-title').text(title);
+                    $('#noteModal #noteCategory').text(category);
+                    $('#noteModal #noteContent').text(content);
                     $('#noteModal').modal('show');
                 });
             }
         }).addTo(map);
     } catch (e) {
         console.error('Error adding GeoJSON to map:', e);
+        // Optionally show user-friendly error message
+        alert('Harita gösterimi sırasında bir hata oluştu. Lütfen sayfayı yenileyip tekrar deneyin.');
     }
 }
 
 
-// Fetch işlemini başlat
+// Sayfa yüklendiğinde mevcut oturum kontrolü
+document.addEventListener('DOMContentLoaded', async () => {
+    const { data: { user }, error } = await supabaseClient.auth.getUser();
+    
+    if (user) {
+        updateUIForAuthenticatedUser(user);
+    } else {
+        updateUIForSignedOutUser();
+    }
+});
+
 fetchGeoJSON();
 addGeoJSONToMap();
